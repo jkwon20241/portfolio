@@ -225,3 +225,20 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 .pair .shot { width: auto; height: auto; min-width: 0; max-width: calc(50% - 8px); max-height: calc(100vh - 190px); max-height: calc(100svh - 190px); object-fit: contain; }
 .shot.crop32 { aspect-ratio: 1.5; object-fit: cover; }
 @media (max-width: 809px) { .pair { gap: 10px; } }
+
+/* wider gutters between images on every page */
+.grid { column-gap: 32px; }
+.gallery, .process { gap: 32px; }
+@media (max-width: 809px) {
+  .gallery, .process { gap: 20px; }
+}
+
+/* seashell: two posters with the project text beside them, filling the column */
+.poster-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.72fr); gap: 32px; align-items: start; width: 100%; }
+.poster-row .shot { width: 100%; height: auto; }
+.poster-text { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.poster-text .body { padding-top: 4px; text-wrap: pretty; }
+@media (max-width: 809px) {
+  .poster-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  .poster-text { grid-column: 1 / -1; padding-top: 4px; }
+}

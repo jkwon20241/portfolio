@@ -209,3 +209,10 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
   .hi::after { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .hi { transition: opacity 0.18s ease; } }
+
+/* information: larger bio and contact links */
+.bio .body { font-size: 20px; line-height: 1.45; }
+.bio-text { max-width: 640px; gap: 20px; }
+@media (max-width: 809px) {
+  .bio .body { font-size: 18px; }
+}

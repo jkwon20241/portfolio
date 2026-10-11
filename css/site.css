@@ -242,3 +242,12 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
   .poster-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
   .poster-text { grid-column: 1 / -1; padding-top: 4px; }
 }
+
+/* seashell: larger posters of equal height; title lines up with their top edge, description with their bottom edge */
+@media (min-width: 810px) {
+  .poster-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr); align-items: stretch; }
+  .poster-row .shot { aspect-ratio: 1337 / 2000; object-fit: cover; }
+  .poster-text { justify-content: flex-start; }
+  .poster-text .body { margin-top: auto; padding-top: 24px; }
+  .poster-text .heading { margin-top: -0.2em; }
+}

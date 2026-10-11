@@ -52,6 +52,7 @@
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   var targets = document.querySelectorAll(".card, .shot, .video, .details, .process-head, .pager, .about, .list, .contact-form, .footer-in");
   var viewport = window.innerHeight || document.documentElement.clientHeight;
+  if (!viewport) return; // page not laid out yet (hidden tab): show everything
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;

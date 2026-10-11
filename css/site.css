@@ -111,3 +111,22 @@ a { color: inherit; text-decoration: none; transition: color 0.2s cubic-bezier(0
   .about { flex-direction: column; gap: 32px; }
   .portrait { width: 100%; }
 }
+
+/* contact */
+.contact-page { padding: 24px var(--pad) 0; }
+.contact-in { display: flex; flex-direction: column; gap: 32px; max-width: 1120px; }
+.contact-in .back { align-self: flex-start; }
+.contact-form { display: flex; flex-direction: column; gap: 28px; width: 100%; max-width: 560px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field .label { color: var(--muted); }
+.field input, .field textarea { width: 100%; font-family: inherit; color: var(--text); background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 8px 0; outline: none; resize: vertical; transition: border-color 0.2s cubic-bezier(0.44, 0, 0.56, 1); }
+.field input::placeholder, .field textarea::placeholder { color: var(--muted); opacity: 0.7; }
+.field input:focus, .field textarea:focus { border-bottom-color: var(--text); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.form-foot { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.send { font-family: inherit; color: var(--text); background: var(--surface); border: 0; border-radius: 4px; padding: 10px 18px; cursor: pointer; transition: color 0.2s cubic-bezier(0.44, 0, 0.56, 1); }
+.send:hover { color: var(--muted); }
+.send:disabled { color: var(--muted); cursor: default; }
+@media (max-width: 809px) {
+  .contact-page { padding-top: 16px; }
+}

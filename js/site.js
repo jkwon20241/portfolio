@@ -85,3 +85,38 @@
   document.addEventListener("mouseover", warm, { passive: true });
   document.addEventListener("touchstart", warm, { passive: true });
 })();
+
+// Custom cursor: a dot that follows the pointer and turns white over
+// links, buttons and clickable images. Mouse-type pointers only.
+(function () {
+  if (!window.matchMedia || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  var dot = document.createElement("div");
+  dot.className = "cursor-dot";
+  dot.setAttribute("aria-hidden", "true");
+  document.body.appendChild(dot);
+  document.documentElement.classList.add("has-cursor");
+  var CLICKABLE = "a[href], button, [role='button'], input[type='submit']";
+  function place(x, y) { dot.style.transform = "translate3d(" + x + "px," + y + "px,0)"; }
+  function update(event) {
+    place(event.clientX, event.clientY);
+    var target = event.target;
+    var framed = target && target.tagName === "IFRAME";
+    dot.classList.toggle("show", !framed);
+    dot.classList.toggle("on", !!(target && target.closest && target.closest(CLICKABLE)));
+    try { sessionStorage.setItem("cursor", event.clientX + "," + event.clientY); } catch (e) {}
+  }
+  // Carry the last position across page changes so the dot does not vanish until the next move.
+  try {
+    var saved = (sessionStorage.getItem("cursor") || "").split(",");
+    if (saved.length === 2) {
+      place(+saved[0], +saved[1]);
+      dot.classList.add("show");
+      var under = document.elementFromPoint(+saved[0], +saved[1]);
+      dot.classList.toggle("on", !!(under && under.closest && under.closest(CLICKABLE)));
+    }
+  } catch (e) {}
+  document.addEventListener("mousemove", update, { passive: true });
+  document.addEventListener("mouseover", update, { passive: true });
+  document.documentElement.addEventListener("mouseleave", function () { dot.classList.remove("show"); });
+  window.addEventListener("blur", function () { dot.classList.remove("show"); });
+})();

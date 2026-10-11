@@ -163,3 +163,26 @@ a { color: inherit; text-decoration: none; transition: color 0.2s cubic-bezier(0
   .nav-home img { width: 34px; height: 34px; }
   .nav { padding-top: 12px; padding-bottom: 12px; }
 }
+
+/* tags read as Title Case */
+.tag { text-transform: capitalize; }
+
+/* header sits lower, links spaced wider */
+.nav { padding-top: 32px; }
+.nav-links { gap: 44px; }
+.footer-links { gap: 40px; }
+@media (max-width: 809px) {
+  .nav { padding-top: 22px; }
+  .nav-links { gap: 28px; }
+  .footer-links { gap: 36px; }
+}
+
+/* home captions: title, then a smaller, quieter line beneath */
+.cap-text { display: flex; flex-direction: column; gap: 1px; }
+.cap-sub { font-size: 14px; line-height: 1.45; opacity: 0.55; }
+
+/* custom cursor: 17px navy dot, white over anything clickable */
+.cursor-dot { position: fixed; left: 0; top: 0; z-index: 10; width: 17px; height: 17px; margin: -8.5px 0 0 -8.5px; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 1px transparent; pointer-events: none; opacity: 0; transition: background-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease; will-change: transform; }
+.cursor-dot.show { opacity: 1; }
+.cursor-dot.on { background: #fff; box-shadow: 0 0 0 1px var(--text); }
+html.has-cursor, html.has-cursor * { cursor: none !important; }

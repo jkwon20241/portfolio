@@ -219,3 +219,9 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 
 /* footer spans the same width as the header: left edge under the icon, right edge under the nav links */
 .footer-in { max-width: none; }
+
+/* tall (portrait) images sit side by side so one image never fills the whole screen */
+.pair { display: flex; justify-content: flex-start; align-items: flex-start; gap: 16px; width: 100%; }
+.pair .shot { width: auto; height: auto; min-width: 0; max-width: calc(50% - 8px); max-height: calc(100vh - 190px); max-height: calc(100svh - 190px); object-fit: contain; }
+.shot.crop32 { aspect-ratio: 1.5; object-fit: cover; }
+@media (max-width: 809px) { .pair { gap: 10px; } }

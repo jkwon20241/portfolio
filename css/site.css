@@ -216,3 +216,6 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 @media (max-width: 809px) {
   .bio .body { font-size: 18px; }
 }
+
+/* footer spans the same width as the header: left edge under the icon, right edge under the nav links */
+.footer-in { max-width: none; }

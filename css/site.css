@@ -251,3 +251,9 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
   .poster-text .body { margin-top: auto; padding-top: 24px; }
   .poster-text .heading { margin-top: -0.2em; }
 }
+
+/* seashell: two posters across the full column; text below, each half under its poster */
+.poster-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; width: 100%; }
+.poster-pair .shot { width: 100%; height: auto; aspect-ratio: 1337 / 2000; object-fit: cover; }
+.details-pair { gap: 32px; }
+@media (max-width: 809px) { .poster-pair { gap: 20px; } }

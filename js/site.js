@@ -55,7 +55,8 @@
   if (!viewport) return; // page not laid out yet (hidden tab): show everything
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (!entry.isIntersecting) return;
+      // already scrolled past (page restored partway down): show it too
+      if (!entry.isIntersecting && entry.boundingClientRect.bottom > 0) return;
       entry.target.classList.add("in");
       observer.unobserve(entry.target);
     });

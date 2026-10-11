@@ -120,3 +120,36 @@
   document.documentElement.addEventListener("mouseleave", function () { dot.classList.remove("show"); });
   window.addEventListener("blur", function () { dot.classList.remove("show"); });
 })();
+
+// Information page: clicking the photo pops a short "hi!" above it.
+(function () {
+  var button = document.querySelector(".portrait-btn");
+  if (!button) return;
+  var tip = button.querySelector(".hi");
+  var timer = 0;
+  button.addEventListener("click", function () {
+    window.clearTimeout(timer);
+    tip.classList.remove("show");
+    void tip.offsetWidth; // restart the pop when clicked again
+    tip.classList.add("show");
+    timer = window.setTimeout(function () { tip.classList.remove("show"); }, 1800);
+  });
+})();
+
+// Video pages: show a still first and load the Vimeo player on click.
+(function () {
+  var holders = document.querySelectorAll("button.video[data-vimeo]");
+  Array.prototype.forEach.call(holders, function (holder) {
+    holder.addEventListener("click", function () {
+      var box = document.createElement("div");
+      box.className = holder.className.replace("reveal", "").replace(" in", "");
+      var frame = document.createElement("iframe");
+      frame.src = "https://player.vimeo.com/video/" + holder.getAttribute("data-vimeo") + "?autoplay=1&portrait=0&byline=0&title=0";
+      frame.title = holder.getAttribute("data-title") || "Video";
+      frame.allow = "autoplay; fullscreen; picture-in-picture";
+      frame.allowFullscreen = true;
+      box.appendChild(frame);
+      holder.parentNode.replaceChild(box, holder);
+    });
+  });
+})();

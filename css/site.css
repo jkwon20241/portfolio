@@ -257,3 +257,13 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 .poster-pair .shot { width: 100%; height: auto; aspect-ratio: 1337 / 2000; object-fit: cover; }
 .details-pair { gap: 32px; }
 @media (max-width: 809px) { .poster-pair { gap: 20px; } }
+
+/* freshly, the indy, the book: images two across, text below each half */
+.duo, .gallery.two-up { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; width: 100%; }
+.gallery.two-up > .shot:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.process { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.process > .process-head { grid-column: 1 / -1; gap: 32px; }
+.process > .shot:last-child:nth-child(even) { grid-column: 1 / -1; }
+@media (max-width: 809px) {
+  .duo, .gallery.two-up, .process { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}

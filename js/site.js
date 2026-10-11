@@ -44,3 +44,42 @@
       .then(function () { button.disabled = false; });
   });
 })();
+
+// Fade elements in as they scroll into view. Anything already on screen
+// when the page loads is shown at once.
+(function () {
+  if (!("IntersectionObserver" in window)) return;
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var targets = document.querySelectorAll(".card, .shot, .video, .details, .process-head, .pager, .about, .list, .contact-form, .footer-in");
+  var viewport = window.innerHeight || document.documentElement.clientHeight;
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
+  Array.prototype.forEach.call(targets, function (el) {
+    if (el.getBoundingClientRect().top < viewport) return;
+    el.classList.add("reveal");
+    observer.observe(el);
+  });
+})();
+
+// Fetch a page as soon as its link is pointed at or touched, so the click feels instant.
+(function () {
+  var done = {};
+  function warm(event) {
+    var link = event.target.closest && event.target.closest("a[href]");
+    if (!link || link.origin !== window.location.origin || link.target === "_blank") return;
+    var url = link.href.split("#")[0];
+    if (done[url] || url === window.location.href.split("#")[0]) return;
+    done[url] = true;
+    var hint = document.createElement("link");
+    hint.rel = "prefetch";
+    hint.href = url;
+    document.head.appendChild(hint);
+  }
+  document.addEventListener("mouseover", warm, { passive: true });
+  document.addEventListener("touchstart", warm, { passive: true });
+})();

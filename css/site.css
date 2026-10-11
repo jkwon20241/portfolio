@@ -10,7 +10,7 @@
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: "Hanken Grotesk", sans-serif; font-weight: 400; -webkit-font-smoothing: antialiased; }
 h1, h2, p { margin: 0; }
-img { display: block; max-width: 100%; }
+img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; transition: color 0.2s cubic-bezier(0.44, 0, 0.56, 1); }
 
 /* type */
@@ -129,4 +129,22 @@ a { color: inherit; text-decoration: none; transition: color 0.2s cubic-bezier(0
 .send:disabled { color: var(--muted); cursor: default; }
 @media (max-width: 809px) {
   .contact-page { padding-top: 16px; }
+}
+
+/* home thumbnails dim under the cursor */
+.thumb img { transition: opacity 0.25s cubic-bezier(0.44, 0, 0.56, 1); }
+@media (hover: hover) {
+  .card:hover .thumb img { opacity: 0.6; }
+}
+
+/* page changes: cross-fade instead of a blank flash */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.18s; }
+
+/* elements fade up to full opacity as they scroll into view */
+.reveal { opacity: 0.15; transition: opacity 0.6s cubic-bezier(0.44, 0, 0.56, 1); }
+.reveal.in { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transition: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }

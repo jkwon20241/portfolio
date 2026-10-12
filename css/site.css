@@ -272,3 +272,10 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 .process { padding-top: 8px; }
 .process > .shot:last-child:nth-child(even) { grid-column: auto; }
 .process > .shot:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+/* project text: title, tags, description and link stacked in one column under the heading */
+.details, .details-pair { flex-direction: column; gap: 16px; width: calc(50% - 16px); }
+.title-col, .desc-col { flex: none; width: 100%; }
+@media (max-width: 809px) {
+  .details, .details-pair { width: 100%; gap: 16px; }
+}

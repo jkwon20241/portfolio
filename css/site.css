@@ -267,3 +267,8 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 @media (max-width: 809px) {
   .duo, .gallery.two-up, .process { grid-template-columns: minmax(0, 1fr); gap: 20px; }
 }
+
+/* process images follow the gallery with no heading */
+.process { padding-top: 8px; }
+.process > .shot:last-child:nth-child(even) { grid-column: auto; }
+.process > .shot:last-child:nth-child(odd) { grid-column: 1 / -1; }

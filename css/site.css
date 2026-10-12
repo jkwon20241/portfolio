@@ -278,3 +278,22 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 @media (max-width: 809px) {
   .details, .details-pair { gap: 20px; }
 }
+
+/* project text: heading and tags, then the description below them running the full width, from the first image's left edge to the second image's right edge */
+.details, .details-pair { flex-direction: column; gap: 16px; width: 100%; }
+.title-col, .desc-col { flex: none; width: 100%; }
+.desc-col .body { text-wrap: wrap; }
+@media (max-width: 809px) {
+  .details, .details-pair { gap: 16px; }
+}
+
+/* home captions: larger title, description line and tags */
+.cap-title { font-size: 20px; line-height: 1.35; }
+.cap-sub { font-size: 17px; line-height: 1.4; }
+.card .tag { font-size: 15px; padding: 4px 10px; }
+.card .caption { gap: 10px; }
+@media (max-width: 809px) {
+  .cap-title { font-size: 19px; }
+  .cap-sub { font-size: 16px; }
+  .card .tag { font-size: 14px; }
+}

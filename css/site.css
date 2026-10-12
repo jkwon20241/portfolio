@@ -300,3 +300,14 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 
 /* longer text: short measure so a line never runs past about ten words (js/site.js enforces the exact cap) */
 .desc-col .body, .currently { max-width: 31em; }
+
+/* rag: even line lengths and no stranded last words, in every paragraph */
+p, h1, h2 { text-wrap: pretty; }
+.desc-col .body, .bio .body, .currently, .intro-line, .contact-in > .body, .cap-sub { text-wrap: balance; }
+.intro-in .intro-line { max-width: 820px; }
+p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
+.nowrap { white-space: nowrap; }
+/* names of places stay on one line instead of breaking in the middle */
+.bio .inline, .currently a { white-space: nowrap; }
+@media (max-width: 480px) { .bio .inline, .currently a { white-space: normal; } }
+.currently { max-width: 40em; text-wrap: pretty; }

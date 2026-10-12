@@ -154,49 +154,52 @@
   });
 })();
 
-// Longer text: no rendered line may hold more than ten words.
-// CSS keeps the measure short; this adds a break where a line of short words still runs over.
+// Longer text: no rendered line may hold more than ten words, and the right edge stays even.
+// CSS balances the lines of each paragraph; this narrows a block, a few pixels at a time,
+// until natural wrapping keeps every line at ten words or fewer. No forced line breaks.
 (function () {
   var MAX = 10;
   var SELECTOR = ".desc-col .body, .bio .body, .currently, .intro-line, .contact-in > .body";
-  function words(el) {
-    var list = [];
+  function longest(el) {
+    var counts = {}, most = 0;
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-    var node;
+    var node, range = document.createRange();
     while ((node = walker.nextNode())) {
       var re = /\S+/g, match;
-      while ((match = re.exec(node.data))) list.push({ node: node, start: match.index, end: match.index + match[0].length });
-    }
-    return list;
-  }
-  function top(word) {
-    var range = document.createRange();
-    range.setStart(word.node, word.start);
-    range.setEnd(word.node, word.end);
-    return Math.round(range.getBoundingClientRect().top);
-  }
-  function cap(el) {
-    Array.prototype.forEach.call(el.querySelectorAll("br.wb"), function (br) { br.parentNode.removeChild(br); });
-    el.normalize();
-    for (var guard = 0; guard < 40; guard++) {
-      var list = words(el), count = 0, lineTop = null, over = null;
-      for (var i = 0; i < list.length; i++) {
-        var t = top(list[i]);
-        if (lineTop === null || Math.abs(t - lineTop) > 3) { lineTop = t; count = 0; }
-        count++;
-        if (count > MAX) { over = list[i]; break; }
+      while ((match = re.exec(node.data))) {
+        range.setStart(node, match.index);
+        range.setEnd(node, match.index + match[0].length);
+        var key = Math.round(range.getBoundingClientRect().top / 4);
+        counts[key] = (counts[key] || 0) + 1;
+        if (counts[key] > most) most = counts[key];
       }
-      if (!over) return;
-      var br = document.createElement("br");
-      br.className = "wb";
-      var rest = over.node.splitText(over.start);
-      rest.parentNode.insertBefore(br, rest);
     }
+    return most;
   }
-  function run() { Array.prototype.forEach.call(document.querySelectorAll(SELECTOR), cap); }
-  run();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
-  window.addEventListener("load", run);
+  function fit() {
+    var groups = [];
+    Array.prototype.forEach.call(document.querySelectorAll(SELECTOR), function (el) {
+      el.style.maxWidth = "";
+      var parent = el.parentNode, group = null;
+      var shared = el.matches(".bio .body"); // only the bio paragraphs share a width
+      for (var i = 0; shared && i < groups.length; i++) if (groups[i].parent === parent) group = groups[i];
+      if (!group) { group = { parent: parent, items: [] }; groups.push(group); }
+      group.items.push(el);
+    });
+    groups.forEach(function (group) {
+      // paragraphs that sit together share one width, so their left and right edges match
+      var width = 0;
+      group.items.forEach(function (el) { width = Math.max(width, el.getBoundingClientRect().width); });
+      function over() { return group.items.some(function (el) { return longest(el) > MAX; }); }
+      for (var guard = 0; guard < 80 && width > 220 && over(); guard++) {
+        width -= 8;
+        group.items.forEach(function (el) { el.style.maxWidth = width + "px"; });
+      }
+    });
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  window.addEventListener("load", fit);
   var timer = 0;
-  window.addEventListener("resize", function () { window.clearTimeout(timer); timer = window.setTimeout(run, 150); });
+  window.addEventListener("resize", function () { window.clearTimeout(timer); timer = window.setTimeout(fit, 150); });
 })();

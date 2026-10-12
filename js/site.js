@@ -159,7 +159,8 @@
 // until natural wrapping keeps every line at ten words or fewer. No forced line breaks.
 (function () {
   var MAX = 10;
-  var SELECTOR = ".desc-col .body, .bio .body, .currently, .intro-line, .contact-in > .body";
+  // the ten-word cap applies to the bio and intro; project descriptions and the "Currently" line are set by width alone
+  var SELECTOR = ".bio .body, .intro-line, .contact-in > .body, .desc-col .body:not(.desc-fill)";
   function longest(el) {
     var counts = {}, most = 0;
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -197,6 +198,25 @@
       }
     });
   }
+  // Rag: a line should not end on a small connecting word, and a dash stays with the word before it.
+  // Tie those words to the next one with a non-breaking space.
+  var SMALL = /(^|[\s\u00A0(“"])(a|an|the|and|or|of|to|in|at|as|by|for|on|with|is|her|she|how|can|be)[ \t\n]+(?=\S)/gi;
+  function glue(el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    var node, nodes = [];
+    while ((node = walker.nextNode())) nodes.push(node);
+    nodes.forEach(function (text, index) {
+      var value = text.data;
+      for (var pass = 0; pass < 2; pass++) value = value.replace(SMALL, "$1$2\u00A0");
+      // a small word at the very end of this piece of text ties to whatever follows (a link, for instance)
+      if (index < nodes.length - 1) value = value.replace(/(^|[\s\u00A0])(a|an|the|and|or|of|to|in|at|as|by|for|on|with)[ \t\n]+$/i, "$1$2\u00A0");
+      value = value.replace(/[ \t\n]+—/g, "\u00A0—");
+      // the first word of a sentence should not be left alone at the end of a line
+      value = value.replace(/([.!?:]["”]?[ \t\n]+)(\S+)[ \t\n]+(?=\S)/g, "$1$2\u00A0");
+      if (value !== text.data) text.data = value;
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(SELECTOR + ", .desc-col .body, .cap-sub"), glue);
   fit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   window.addEventListener("load", fit);

@@ -311,3 +311,14 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
 .bio .inline, .currently a { white-space: nowrap; }
 @media (max-width: 480px) { .bio .inline, .currently a { white-space: normal; } }
 .currently { max-width: 40em; text-wrap: pretty; }
+
+/* project descriptions (all but Freshly): as wide as the first image, each line filled before the next, so the first line carries the most words */
+.desc-col .body.desc-fill { max-width: calc(50% - 16px); text-wrap: pretty; }
+@media (max-width: 809px) { .desc-col .body.desc-fill { max-width: none; } }
+
+/* home: the "Currently designing" line is left to run naturally, with no word cap */
+.currently { max-width: none; text-wrap: pretty; }
+
+/* footer: date sits under the time */
+.clock { flex-direction: column; align-items: flex-start; gap: 4px; min-height: 0; }
+.closing { gap: 6px; }

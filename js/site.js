@@ -153,3 +153,50 @@
     });
   });
 })();
+
+// Longer text: no rendered line may hold more than ten words.
+// CSS keeps the measure short; this adds a break where a line of short words still runs over.
+(function () {
+  var MAX = 10;
+  var SELECTOR = ".desc-col .body, .bio .body, .currently, .intro-line, .contact-in > .body";
+  function words(el) {
+    var list = [];
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var re = /\S+/g, match;
+      while ((match = re.exec(node.data))) list.push({ node: node, start: match.index, end: match.index + match[0].length });
+    }
+    return list;
+  }
+  function top(word) {
+    var range = document.createRange();
+    range.setStart(word.node, word.start);
+    range.setEnd(word.node, word.end);
+    return Math.round(range.getBoundingClientRect().top);
+  }
+  function cap(el) {
+    Array.prototype.forEach.call(el.querySelectorAll("br.wb"), function (br) { br.parentNode.removeChild(br); });
+    el.normalize();
+    for (var guard = 0; guard < 40; guard++) {
+      var list = words(el), count = 0, lineTop = null, over = null;
+      for (var i = 0; i < list.length; i++) {
+        var t = top(list[i]);
+        if (lineTop === null || Math.abs(t - lineTop) > 3) { lineTop = t; count = 0; }
+        count++;
+        if (count > MAX) { over = list[i]; break; }
+      }
+      if (!over) return;
+      var br = document.createElement("br");
+      br.className = "wb";
+      var rest = over.node.splitText(over.start);
+      rest.parentNode.insertBefore(br, rest);
+    }
+  }
+  function run() { Array.prototype.forEach.call(document.querySelectorAll(SELECTOR), cap); }
+  run();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(run);
+  window.addEventListener("load", run);
+  var timer = 0;
+  window.addEventListener("resize", function () { window.clearTimeout(timer); timer = window.setTimeout(run, 150); });
+})();

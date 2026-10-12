@@ -297,3 +297,6 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
   .cap-sub { font-size: 16px; }
   .card .tag { font-size: 14px; }
 }
+
+/* longer text: short measure so a line never runs past about ten words (js/site.js enforces the exact cap) */
+.desc-col .body, .currently { max-width: 31em; }

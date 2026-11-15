@@ -342,3 +342,5 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
   .fit-row { flex-direction: column; gap: 20px; }
   .fit-row > .shot { flex: none; width: 100%; }
 }
+.credit { padding-top: 32px; }
+@media (max-width: 809px) { .credit { padding-top: 20px; } }

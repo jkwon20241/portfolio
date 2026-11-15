@@ -216,7 +216,7 @@ button.video { display: block; padding: 0; border: 0; font: inherit; color: inhe
 
 /* information: larger bio and contact links */
 .bio .body { font-size: 20px; line-height: 1.45; }
-.bio-text { max-width: 640px; gap: 20px; }
+.bio-text { max-width: 760px; gap: 20px; }
 @media (max-width: 809px) {
   .bio .body { font-size: 18px; }
 }
@@ -317,7 +317,7 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
 .currently { max-width: 40em; text-wrap: pretty; }
 
 /* project descriptions (all but Freshly): as wide as the first image, each line filled before the next, so the first line carries the most words */
-.desc-col .body.desc-fill { max-width: calc(62% - 16px); text-wrap: pretty; }
+.desc-col .body.desc-fill { max-width: calc(50% - 16px); text-wrap: pretty; }
 @media (max-width: 809px) { .desc-col .body.desc-fill { max-width: none; } }
 
 /* home: the "Currently designing" line is left to run naturally, with no word cap */

@@ -175,7 +175,7 @@
 // CSS balances the lines of each paragraph; this narrows a block, a few pixels at a time,
 // until natural wrapping keeps every line at ten words or fewer. No forced line breaks.
 (function () {
-  var MAX = 10;
+  var MAX = 10, BIO_MAX = 14;
   // the ten-word cap applies to the bio and intro; project descriptions and the "Currently" line are set by width alone
   var SELECTOR = ".bio .body, .intro-line, .contact-in > .body, .desc-col .body:not(.desc-fill)";
   function longest(el) {
@@ -208,7 +208,9 @@
       // paragraphs that sit together share one width, so their left and right edges match
       var width = 0;
       group.items.forEach(function (el) { width = Math.max(width, el.getBoundingClientRect().width); });
-      function over() { return group.items.some(function (el) { return longest(el) > MAX; }); }
+      // the Information bio runs a little wider: up to fourteen words a line
+      var cap = group.items[0].matches(".bio .body") ? BIO_MAX : MAX;
+      function over() { return group.items.some(function (el) { return longest(el) > cap; }); }
       for (var guard = 0; guard < 80 && width > 220 && over(); guard++) {
         width -= 8;
         group.items.forEach(function (el) { el.style.maxWidth = width + "px"; });

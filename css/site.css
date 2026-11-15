@@ -46,8 +46,6 @@ a { color: inherit; text-decoration: none; transition: color 0.2s cubic-bezier(0
 .intro { padding: 72px var(--pad) 48px; }
 .intro-in { display: flex; flex-direction: column; gap: 10px; }
 .intro-in .intro-line { max-width: 900px; }
-.intro-name { cursor: default; transition: color 0.2s cubic-bezier(0.44, 0, 0.56, 1); }
-.intro-name:hover { color: var(--muted); }
 .work { padding: 0 var(--pad); }
 .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 16px; }
 .card { display: flex; flex-direction: column; gap: 12px; }

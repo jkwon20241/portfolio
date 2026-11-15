@@ -50,6 +50,9 @@
 (function () {
   if (!("IntersectionObserver" in window)) return;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // coming back (or reloading) returns to a page already seen: show it exactly as it was left
+  var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+  if (nav && (nav.type === "back_forward" || nav.type === "reload")) return;
   var targets = document.querySelectorAll(".card, .shot, .poster-text, .video, .details, .process-head, .pager, .about, .list, .contact-form, .footer-in");
   var viewport = window.innerHeight || document.documentElement.clientHeight;
   if (!viewport) return; // page not laid out yet (hidden tab): show everything
@@ -86,6 +89,17 @@
   document.addEventListener("touchstart", warm, { passive: true });
 })();
 
+// Once the page has finished loading, fetch the images further down in the background,
+// so scrolling never reaches a picture that is still blank.
+(function () {
+  if (navigator.connection && navigator.connection.saveData) return; // respect data saver
+  function preload() {
+    Array.prototype.forEach.call(document.querySelectorAll('img[loading="lazy"]'), function (img) { img.loading = "eager"; });
+  }
+  function later() { (window.requestIdleCallback || function (fn) { window.setTimeout(fn, 200); })(preload); }
+  if (document.readyState === "complete") later(); else window.addEventListener("load", later);
+})();
+
 // Custom cursor: a dot that follows the pointer and turns white over
 // links, buttons and clickable images. Mouse-type pointers only.
 (function () {
@@ -103,8 +117,11 @@
     var framed = target && target.tagName === "IFRAME";
     dot.classList.toggle("show", !framed);
     dot.classList.toggle("on", !!(target && target.closest && target.closest(CLICKABLE)));
-    try { sessionStorage.setItem("cursor", event.clientX + "," + event.clientY); } catch (e) {}
+    last = event.clientX + "," + event.clientY;
   }
+  var last = "";
+  // remember where the pointer was only when leaving the page, not on every move
+  window.addEventListener("pagehide", function () { try { if (last) sessionStorage.setItem("cursor", last); } catch (e) {} });
   // Carry the last position across page changes so the dot does not vanish until the next move.
   try {
     var saved = (sessionStorage.getItem("cursor") || "").split(",");

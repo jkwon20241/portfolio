@@ -322,3 +322,8 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
 /* footer: date sits under the time */
 .clock { flex-direction: column; align-items: flex-start; gap: 4px; min-height: 0; }
 .closing { gap: 6px; }
+
+/* home: "Currently…" line matches the project description lines */
+.currently { font-size: 17px; line-height: 1.4; color: rgba(31, 58, 87, 0.55); }
+.currently a { color: var(--text); }
+@media (max-width: 809px) { .currently { font-size: 16px; } }

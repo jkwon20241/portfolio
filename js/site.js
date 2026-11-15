@@ -175,9 +175,9 @@
 // CSS balances the lines of each paragraph; this narrows a block, a few pixels at a time,
 // until natural wrapping keeps every line at ten words or fewer. No forced line breaks.
 (function () {
-  var MAX = 10, BIO_MAX = 14;
-  // the ten-word cap applies to the bio and intro; project descriptions and the "Currently" line are set by width alone
-  var SELECTOR = ".bio .body, .intro-line, .contact-in > .body, .desc-col .body:not(.desc-fill)";
+  var MAX = 10;
+  // the ten-word cap applies to the intro; the Information bio, project descriptions and the "Currently" line are set by width alone
+  var SELECTOR = ".intro-line, .contact-in > .body, .desc-col .body:not(.desc-fill)";
   function longest(el) {
     var counts = {}, most = 0;
     var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
@@ -198,19 +198,13 @@
     var groups = [];
     Array.prototype.forEach.call(document.querySelectorAll(SELECTOR), function (el) {
       el.style.maxWidth = "";
-      var parent = el.parentNode, group = null;
-      var shared = el.matches(".bio .body"); // only the bio paragraphs share a width
-      for (var i = 0; shared && i < groups.length; i++) if (groups[i].parent === parent) group = groups[i];
-      if (!group) { group = { parent: parent, items: [] }; groups.push(group); }
-      group.items.push(el);
+      groups.push({ parent: el.parentNode, items: [el] });
     });
     groups.forEach(function (group) {
       // paragraphs that sit together share one width, so their left and right edges match
       var width = 0;
       group.items.forEach(function (el) { width = Math.max(width, el.getBoundingClientRect().width); });
-      // the Information bio runs a little wider: up to fourteen words a line
-      var cap = group.items[0].matches(".bio .body") ? BIO_MAX : MAX;
-      function over() { return group.items.some(function (el) { return longest(el) > cap; }); }
+      function over() { return group.items.some(function (el) { return longest(el) > MAX; }); }
       for (var guard = 0; guard < 80 && width > 220 && over(); guard++) {
         width -= 8;
         group.items.forEach(function (el) { el.style.maxWidth = width + "px"; });
@@ -236,6 +230,20 @@
     });
   }
   Array.prototype.forEach.call(document.querySelectorAll(SELECTOR + ", .desc-col .body, .cap-sub"), glue);
+  // The Information bio fills its full measure for an even right edge, so it ties only the words that
+  // read worst at a line end: articles, and the first word of a sentence.
+  Array.prototype.forEach.call(document.querySelectorAll(".bio-text .body"), function (el) {
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), node;
+    while ((node = walker.nextNode())) {
+      var value = node.data
+        .replace(/(^|[\s\u00A0])(a|an|the)[ \t\n]+(?=\S)/gi, "$1$2\u00A0")
+        .replace(/([.!?]["”]?[ \t\n]+)(\S+)[ \t\n]+(?=\S)/g, "$1$2\u00A0")
+        .replace(/[ \t\n]+—/g, "\u00A0—")
+        // an article right before a link (“at the Rhode Island…”) stays with it
+        .replace(/(^|[\s\u00A0])(a|an|the)[ \t\n]+$/i, "$1$2\u00A0");
+      if (value !== node.data) node.data = value;
+    }
+  });
   fit();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   window.addEventListener("load", fit);

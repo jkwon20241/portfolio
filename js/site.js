@@ -71,6 +71,14 @@
   });
 })();
 
+// Clean addresses: show /information rather than /information.html, and / rather than /index.html.
+(function () {
+  var path = location.pathname;
+  if (!/\.html$/.test(path) || !history.replaceState) return;
+  var clean = path.replace(/index\.html$/, "").replace(/\.html$/, "");
+  try { history.replaceState(history.state, "", clean + location.search + location.hash); } catch (e) {}
+})();
+
 // Fetch a page as soon as its link is pointed at or touched, so the click feels instant.
 (function () {
   var done = {};

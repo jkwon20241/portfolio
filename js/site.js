@@ -53,7 +53,7 @@
   // coming back (or reloading) returns to a page already seen: show it exactly as it was left
   var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
   if (nav && (nav.type === "back_forward" || nav.type === "reload")) return;
-  var targets = document.querySelectorAll(".card, .shot, .poster-text, .video, .details, .process-head, .pager, .about, .list, .contact-form, .footer-in");
+  var targets = document.querySelectorAll(".card, .shot, .slideshow, .poster-text, .video, .details, .process-head, .pager, .about, .list, .contact-form, .footer-in");
   var viewport = window.innerHeight || document.documentElement.clientHeight;
   if (!viewport) return; // page not laid out yet (hidden tab): show everything
   var observer = new IntersectionObserver(function (entries) {
@@ -239,4 +239,49 @@
   window.addEventListener("load", fit);
   var timer = 0;
   window.addEventListener("resize", function () { window.clearTimeout(timer); timer = window.setTimeout(fit, 150); });
+})();
+
+// Slideshow: advances on its own at a reading pace; an arrow click takes over,
+// and it picks up again after 15 seconds without a click.
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll("[data-slideshow]"), function (root) {
+    var slides = root.querySelectorAll(".slide");
+    var count = root.querySelector(".slide-count");
+    var n = slides.length, i = 0, timer = null, idle = null, visible = false, manual = false;
+    var PACE = 6000, RESUME = 15000;
+    if (n < 2) return;
+    function show(k) {
+      slides[i].classList.remove("is-active"); slides[i].setAttribute("aria-hidden", "true");
+      i = (k + n) % n;
+      slides[i].classList.add("is-active"); slides[i].removeAttribute("aria-hidden");
+      if (count) count.textContent = (i + 1) + " / " + n;
+    }
+    function stop() { clearInterval(timer); timer = null; }
+    function play() {
+      stop();
+      if (manual || !visible || document.hidden) return;
+      timer = setInterval(function () { show(i + 1); }, PACE);
+    }
+    function step(d) {
+      show(i + d);
+      manual = true; stop();
+      clearTimeout(idle);
+      idle = setTimeout(function () { manual = false; play(); }, RESUME);
+    }
+    Array.prototype.forEach.call(root.querySelectorAll(".slide-btn"), function (b) {
+      b.addEventListener("click", function () { step(+b.getAttribute("data-dir")); });
+    });
+    var x0 = null;
+    var box = root.querySelector(".slides");
+    box.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    box.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
+    });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; play(); }, { threshold: 0.4 }).observe(root);
+    } else { visible = true; play(); }
+    document.addEventListener("visibilitychange", play);
+  });
 })();

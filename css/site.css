@@ -327,3 +327,6 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
 .currently { font-size: 17px; line-height: 1.4; color: rgba(31, 58, 87, 0.55); }
 .currently a { color: var(--text); }
 @media (max-width: 809px) { .currently { font-size: 16px; } }
+
+/* full-width gallery image */
+.gallery.two-up > .shot.wide { grid-column: 1 / -1; }

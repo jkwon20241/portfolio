@@ -334,3 +334,11 @@ p, h1, h2, .tag, .label { hyphens: manual; overflow-wrap: break-word; }
 
 /* full-width gallery image */
 .gallery.two-up > .shot.wide { grid-column: 1 / -1; }
+
+/* images of different shapes in one row, sized so they share the same height */
+.fit-row { display: flex; align-items: flex-start; gap: 32px; width: 100%; }
+.fit-row > .shot { flex: var(--r) 1 0; width: 0; min-width: 0; }
+@media (max-width: 809px) {
+  .fit-row { flex-direction: column; gap: 20px; }
+  .fit-row > .shot { flex: none; width: 100%; }
+}
